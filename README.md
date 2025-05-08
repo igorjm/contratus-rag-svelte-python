@@ -1,301 +1,316 @@
-# Contratus AI  - Sistema de Consulta de Contratos
+# Contratus AI - Contract Query System
 
-Um sistema moderno para processamento e consulta semântica de contratos , utilizando Python, Pinecone e SvelteKit. Permite busca semântica e perguntas em linguagem natural sobre contratos.
+A modern system for semantic processing and querying of contracts, using Python, Pinecone, and SvelteKit. It allows semantic search and natural language questions about contracts.
 
-## Estrutura do Projeto
+## Project Structure
 
 ```
-├── api_pinecone.py       # API principal com FastAPI
-├── api_upload.py         # API para upload de contratos
-├── llm_router.py         # Roteador para perguntas ao LLM
-├── pinecone_utils.py     # Utilitários para Pinecone
-├── processar_contrato.py # Processamento de contratos
-├── shared.py             # Funções e modelos compartilhados
-├── contratos/            # Diretório para armazenar os contratos
-├── frontend/             # Aplicação SvelteKit
-├── diagrama_modulos.md   # Diagrama das relações entre módulos
-└── .env                  # Variáveis de ambiente
+├── api_pinecone.py       # Main API with FastAPI
+├── api_upload.py         # API for contract uploads
+├── llm_router.py         # Router for LLM-based questions
+├── pinecone_utils.py     # Pinecone utilities
+├── processar_contrato.py # Contract processing
+├── shared.py             # Shared functions and models
+├── contratos/            # Directory to store contracts
+├── frontend/             # SvelteKit application
+├── diagrama_modulos.md   # Diagram of module relationships
+└── .env                  # Environment variables
 ```
 
-Para uma visão detalhada de como os módulos do backend se relacionam, consulte o arquivo [diagrama_modulos.md](diagrama_modulos.md).
+For a detailed view of how the backend modules are related, refer to the file [diagrama_modulos.md](diagrama_modulos.md).
 
 - **Backend (Python + FastAPI)**
-  - `processar_contrato.py`: Processamento automático de PDFs e geração de embeddings
-  - `api_pinecone.py`: API REST para busca semântica de contratos usando Pinecone
-  - `api_upload.py`: API para upload e processamento automático de novos contratos
-  - `pinecone_utils.py`: Biblioteca de utilidades para interação com o Pinecone
-  - `llm_router.py`: Roteador para processamento de perguntas com LLM
-  - `shared.py`: Funções compartilhadas entre os módulos
+
+  - `processar_contrato.py`: Automatic processing of PDFs and embedding generation
+  - `api_pinecone.py`: REST API for semantic contract search using Pinecone
+  - `api_upload.py`: API for uploading and automatically processing new contracts
+  - `pinecone_utils.py`: Utility library for interacting with Pinecone
+  - `llm_router.py`: Router for processing questions with LLM
+  - `shared.py`: Shared functions across modules
 
 - **Frontend (SvelteKit)**
-  - Interface moderna e responsiva com Tailwind CSS e DaisyUI
-  - Busca semântica em linguagem natural
-  - Visualização de contratos
-  - Modo de pergunta para consultas em linguagem natural
+  - Modern and responsive interface with Tailwind CSS and DaisyUI
+  - Semantic search in natural language
+  - Contract visualization
+  - Question mode for natural language queries
 
-## Explicação dos Códigos Backend
+## Backend Code Explanation
 
 ### 1. `pinecone_utils.py`
 
-**Função**: Biblioteca de utilidades para interação com o Pinecone (banco de dados vetorial).
+**Purpose**: Utility library for interacting with Pinecone (vector database).
 
-**Principais funcionalidades**:
-- Conexão com o Pinecone
-- Geração de embeddings usando OpenAI (modelo text-embedding-3-small)
-- Indexação de documentos
-- Busca semântica de documentos
-- Listagem de documentos no índice
+**Key functionalities**:
 
-Este arquivo funciona como uma biblioteca de funções auxiliares e não precisa ser executado diretamente.
+- Connecting to Pinecone
+- Generating embeddings using OpenAI (model `text-embedding-3-small`)
+- Document indexing
+- Semantic document search
+- Listing documents in the index
+
+This file serves as a library of helper functions and does not need to be executed directly.
 
 ### 2. `processar_contrato.py`
 
-**Função**: Processamento de contratos em PDF e indexação no Pinecone.
+**Purpose**: Processing PDF contracts and indexing them in Pinecone.
 
-**Principais funcionalidades**:
-- Carrega arquivos PDF usando LangChain
-- Divide documentos em chunks menores
-- Gera embeddings para cada chunk
-- Indexa os chunks no Pinecone com metadados
-- Pode processar um único contrato ou todos os contratos em uma pasta
+**Key functionalities**:
 
-Este arquivo pode ser executado diretamente para processar contratos:
-- Para processar todos os contratos: `python processar_contrato.py`
-- Para processar um contrato específico: `python processar_contrato.py caminho/para/contrato.pdf`
+- Loads PDF files using LangChain
+- Splits documents into smaller chunks
+- Generates embeddings for each chunk
+- Indexes the chunks in Pinecone with metadata
+- Can process a single contract or all contracts in a folder
+
+This file can be executed directly to process contracts:
+
+- To process all contracts: `python processar_contrato.py`
+- To process a specific contract: `python processar_contrato.py path/to/contract.pdf`
 
 ### 3. `api_pinecone.py`
 
-**Função**: API REST para busca semântica de contratos usando FastAPI.
+**Purpose**: REST API for semantic contract search using FastAPI.
 
-**Principais funcionalidades**:
-- Endpoint para listar todos os contratos
-- Endpoint para busca semântica por consulta em linguagem natural
-- Endpoint para listar arquivos únicos no índice
-- Gerenciamento de conexão com Pinecone
-- Integração com o roteador LLM para perguntas em linguagem natural
+**Key functionalities**:
 
-Este arquivo inicia um servidor web na porta 8000 quando executado: `python api_pinecone.py`
+- Endpoint to list all contracts
+- Endpoint for semantic search with natural language queries
+- Endpoint to list unique files in the index
+- Manages connection to Pinecone
+- Integrates with the LLM router for natural language questions
+
+This file starts a web server on port 8000 when executed: `python api_pinecone.py`
 
 ### 4. `api_upload.py`
 
-**Função**: API REST para upload e processamento automático de novos contratos.
+**Purpose**: REST API for uploading and automatically processing new contracts.
 
-**Principais funcionalidades**:
-- Endpoint para upload de arquivos PDF
-- Processamento assíncrono dos contratos enviados
-- Endpoint para listar contratos disponíveis na pasta
+**Key functionalities**:
 
-Este arquivo inicia um servidor web na porta 8001 quando executado: `python api_upload.py`
+- Endpoint for uploading PDF files
+- Asynchronous processing of uploaded contracts
+- Endpoint to list available contracts in the folder
+
+This file starts a web server on port 8001 when executed: `python api_upload.py`
 
 ### 5. `llm_router.py`
 
-**Função**: Roteador para processamento de perguntas usando LLM (Large Language Model).
+**Purpose**: Router for processing questions using LLM (Large Language Model).
 
-**Principais funcionalidades**:
-- Endpoint para responder perguntas sobre contratos usando o LLM
-- Integração com a busca semântica para fornecer contexto ao LLM
-- Formatação de respostas com citação de fontes
+**Key functionalities**:
 
-Este arquivo é importado pelo `api_pinecone.py` e não precisa ser executado diretamente.
+- Endpoint to answer questions about contracts using the LLM
+- Integrates with semantic search to provide context to the LLM
+- Formats responses with source citations
+
+This file is imported by `api_pinecone.py` and does not need to be executed directly.
 
 ### 6. `shared.py`
 
-**Função**: Funções e modelos compartilhados entre os diferentes módulos.
+**Purpose**: Shared functions and models across different modules.
 
-**Principais funcionalidades**:
-- Função compartilhada para busca de contratos
-- Modelos de dados para respostas da API
+**Key functionalities**:
 
-Este arquivo é importado por outros módulos e não precisa ser executado diretamente.
+- Shared function for contract search
+- Data models for API responses
 
-## Requisitos
+This file is imported by other modules and does not need to be executed directly.
+
+## Requirements
 
 - Python 3.8+
 - Node.js 18+
-- Conta no Pinecone (https://www.pinecone.io/)
-- Chave de API da OpenAI (https://platform.openai.com/)
+- Pinecone account (https://www.pinecone.io/)
+- OpenAI API key (https://platform.openai.com/)
 
-## Configuração
+## Setup
 
 1. **Backend**
 
 ```bash
-# Instalar dependências
+# Install dependencies
 pip install -r requirements.txt
 
-# Configurar variáveis de ambiente (.env)
-OPENAI_API_KEY=sua_chave_api_openai
-PINECONE_API_KEY=sua_chave_api_pinecone
-PINECONE_HOST=seu_host_pinecone
+# Configure environment variables (.env)
+OPENAI_API_KEY=your_openai_api_key
+PINECONE_API_KEY=your_pinecone_api_key
+PINECONE_HOST=your_pinecone_host
 PINECONE_INDEX_NAME=brito-ai
-OPENAI_MODEL=gpt-4o-mini  # Opcional, padrão é gpt-4o-mini
+OPENAI_MODEL=gpt-4o-mini  # Optional, default is gpt-4o-mini
 
-# Processar contratos existentes
+# Process existing contracts
 python processar_contrato.py
 
-# Processar apenas um contrato específico
+# Process a specific contract
 python processar_contrato.py contratos\EDUARD ROCHA FONTENELE.pdf
 
-# Iniciar a API de busca semântica com Uvicorn
+# Start the semantic search API with Uvicorn
 uvicorn api_pinecone:app --host 127.0.0.1 --port 8000 --reload
 
-# Iniciar a API de upload (em outra janela do terminal)
+# Start the upload API (in another terminal window)
 uvicorn api_upload:app --host 127.0.0.1 --port 8001 --reload
 ```
 
-**Nota importante:** O índice vetorial no Pinecone (`brito-ai`) deve ser criado manualmente através do painel de controle do Pinecone, usando o modelo `text-embedding-3-small` da OpenAI com dimensão 1536.
+**Important Note:** The vector index in Pinecone (`brito-ai`) must be manually created through the Pinecone dashboard, using the `text-embedding-3-small` model from OpenAI with a dimension of 1536.
 
 2. **Frontend**
 
 ```bash
-# Entrar no diretório do frontend
+# Navigate to the frontend directory
 cd frontend
 
-# Instalar dependências
+# Install dependencies
 npm install
 
-# Iniciar em modo desenvolvimento
+# Start in development mode
 npm run dev
 ```
 
-## Ordem de Execução Recomendada
+## Recommended Execution Order
 
-1. **Processamento inicial de contratos** (se necessário):
+1. **Initial contract processing** (if necessary):
+
    ```
    python processar_contrato.py
    ```
-   Este passo é opcional se os contratos já foram processados e indexados no Pinecone.
 
-2. **Iniciar a API de busca semântica**:
+   This step is optional if the contracts have already been processed and indexed in Pinecone.
+
+2. **Start the semantic search API**:
+
    ```
    uvicorn api_pinecone:app --host 127.0.0.1 --port 8000 --reload
    ```
-   Esta API é essencial para o funcionamento do frontend, pois fornece a capacidade de busca semântica e o modo de pergunta com LLM.
 
-3. **Iniciar a API de upload** (opcional, se quiser permitir upload de novos contratos):
+   This API is essential for the frontend to function, as it provides semantic search and question mode with LLM.
+
+3. **Start the upload API** (optional, if you want to allow new contract uploads):
+
    ```
    uvicorn api_upload:app --host 127.0.0.1 --port 8001 --reload
    ```
-   Este passo é opcional se não houver necessidade de fazer upload de novos contratos.
 
-4. **Iniciar o frontend**:
+   This step is optional if there is no need to upload new contracts.
+
+4. **Start the frontend**:
    ```
    cd frontend
-   npm install (se ainda não tiver instalado as dependências)
+   npm install (if dependencies are not yet installed)
    npm run dev
    ```
-   Isso iniciará o servidor de desenvolvimento do SvelteKit na porta 5173.
+   This will start the SvelteKit development server on port 5173.
 
-Após esses passos, você poderá acessar a aplicação em `http://localhost:5173` e realizar consultas semânticas aos contratos já indexados no Pinecone.
+After these steps, you can access the application at `http://localhost:5173` and perform semantic queries on contracts already indexed in Pinecone.
 
-## Uso
+## Usage
 
-### Processamento de Contratos
+### Contract Processing
 
-1. Coloque os arquivos PDF dos contratos na pasta `contratos/`
-2. Execute `python processar_contrato.py` para processar todos os contratos da pasta
-3. Alternativamente, processe um contrato específico: `python processar_contrato.py caminho/para/contrato.pdf`
+1. Place the PDF contract files in the `contratos/` folder.
+2. Run `python processar_contrato.py` to process all contracts in the folder.
+3. Alternatively, process a specific contract: `python processar_contrato.py path/to/contract.pdf`.
 
-### Upload de Novos Contratos
+### Uploading New Contracts
 
-1. Inicie a API de upload: `uvicorn api_upload:app --host 127.0.0.1 --port 8001 --reload`
-2. Envie novos contratos via endpoint POST `/upload/contrato`
-3. Os contratos enviados serão processados automaticamente em segundo plano
+1. Start the upload API: `uvicorn api_upload:app --host 127.0.0.1 --port 8001 --reload`.
+2. Upload new contracts via the POST `/upload/contrato` endpoint.
+3. Uploaded contracts will be processed automatically in the background.
 
-### Consulta de Contratos
+### Contract Querying
 
-1. Acesse o frontend em `http://localhost:5173`
-2. Use a barra de busca para consultar contratos em linguagem natural
-3. Visualize os resultados ordenados por relevância
-4. Alternativamente, use a API diretamente via endpoint GET `/contratos/busca?q=sua consulta`
+1. Access the frontend at `http://localhost:5173`.
+2. Use the search bar to query contracts in natural language.
+3. View results sorted by relevance.
+4. Alternatively, use the API directly via the GET `/contratos/busca?q=your query` endpoint.
 
-### Modo Pergunta (LLM)
+### Question Mode (LLM)
 
-1. Acesse o frontend em `http://localhost:5173`
-2. Ative o switch "Modo Pergunta" ao lado da barra de busca
-3. Digite sua pergunta em linguagem natural (ex: "Qual o valor do aluguel que Eduardo paga?" ou "Temos informações de boleto?")
-4. Clique em "Buscar" para obter uma resposta detalhada baseada nos contratos relevantes
+1. Access the frontend at `http://localhost:5173`.
+2. Enable the "Question Mode" switch next to the search bar.
+3. Type your question in natural language (e.g., "What is the rent amount Eduardo pays?" or "Do we have invoice information?").
+4. Click "Search" to get a detailed response based on relevant contracts.
 
-Alternativamente, use a API diretamente via endpoint POST `/llm/ask` com um JSON no formato:
+Alternatively, use the API directly via the POST `/llm/ask` endpoint with a JSON payload:
+
 ```json
 {
-  "question": "Sua pergunta aqui",
+  "question": "Your question here",
   "max_results": 3
 }
 ```
 
-O sistema utiliza o modelo configurado na variável de ambiente `OPENAI_MODEL` (padrão: gpt-4o-mini) para gerar respostas detalhadas com base nos contratos encontrados na busca semântica.
+The system uses the model configured in the `OPENAI_MODEL` environment variable (default: gpt-4o-mini) to generate detailed responses based on contracts found in the semantic search.
 
-## Tecnologias
+## Technologies
 
 - **Backend**:
   - Python
   - FastAPI
-  - Uvicorn (servidor ASGI)
-  - Pinecone (banco de dados vetorial)
-  - OpenAI Embeddings (modelo text-embedding-3-small)
-  - OpenAI Chat Completions (modelo gpt-4o-mini padrão)
-  - LangChain (processamento de documentos)
-  
+  - Uvicorn (ASGI server)
+  - Pinecone (vector database)
+  - OpenAI Embeddings (model `text-embedding-3-small`)
+  - OpenAI Chat Completions (default model: gpt-4o-mini)
+  - LangChain (document processing)
 - **Frontend**:
   - SvelteKit
   - Tailwind CSS
   - DaisyUI
 
-## Documentação das APIs
+## API Documentation
 
-### API de Busca Semântica (api_pinecone.py)
+### Semantic Search API (`api_pinecone.py`)
 
-**Porta**: 8000
+**Port**: 8000
 
-| Endpoint | Método | Descrição | Parâmetros |
-|----------|--------|-----------|------------|
-| `/` | GET | Verifica o status da API e a conexão com o Pinecone | - |
-| `/contratos/lista` | GET | Lista todos os contratos disponíveis | `skip`: número de registros para pular<br>`limit`: número máximo de registros para retornar |
-| `/contratos/busca` | GET | Realiza uma busca semântica nos contratos | `q`: consulta para busca<br>`limit`: número máximo de resultados |
-| `/contratos/arquivos` | GET | Lista todos os nomes de arquivos únicos no índice | - |
-| `/llm/ask` | POST | Responde a perguntas sobre contratos usando o LLM | Body JSON: `{"question": "string", "max_results": int}` |
+| Endpoint              | Method | Description                                     | Parameters                                                                        |
+| --------------------- | ------ | ----------------------------------------------- | --------------------------------------------------------------------------------- |
+| `/`                   | GET    | Checks the API status and Pinecone connection   | -                                                                                 |
+| `/contratos/lista`    | GET    | Lists all available contracts                   | `skip`: number of records to skip<br>`limit`: maximum number of records to return |
+| `/contratos/busca`    | GET    | Performs a semantic search on contracts         | `q`: search query<br>`limit`: maximum number of results                           |
+| `/contratos/arquivos` | GET    | Lists all unique file names in the index        | -                                                                                 |
+| `/llm/ask`            | POST   | Answers questions about contracts using the LLM | Body JSON: `{"question": "string", "max_results": int}`                           |
 
-### API de Upload (api_upload.py)
+### Upload API (`api_upload.py`)
 
-**Porta**: 8001
+**Port**: 8001
 
-| Endpoint | Método | Descrição | Parâmetros |
-|----------|--------|-----------|------------|
-| `/upload/contrato` | POST | Faz upload de um novo contrato PDF e o processa automaticamente | Form Data: `file`: arquivo PDF |
-| `/contratos/lista` | GET | Lista todos os contratos disponíveis na pasta de contratos | - |
+| Endpoint           | Method | Description                                               | Parameters                  |
+| ------------------ | ------ | --------------------------------------------------------- | --------------------------- |
+| `/upload/contrato` | POST   | Uploads a new PDF contract and processes it automatically | Form Data: `file`: PDF file |
+| `/contratos/lista` | GET    | Lists all contracts available in the contracts folder     | -                           |
 
-## Inicialização com Uvicorn
+## Starting with Uvicorn
 
-O Uvicorn é um servidor ASGI (Asynchronous Server Gateway Interface) de alto desempenho que é recomendado para aplicações FastAPI. Para iniciar as APIs com Uvicorn, siga os comandos abaixo:
+Uvicorn is a high-performance ASGI (Asynchronous Server Gateway Interface) server recommended for FastAPI applications. To start the APIs with Uvicorn, follow the commands below:
 
-### API de Busca Semântica
+### Semantic Search API
 
 ```bash
 uvicorn api_pinecone:app --host 127.0.0.1 --port 8000 --reload
 ```
 
-Opções importantes:
-- `--host 127.0.0.1`: Limita o acesso apenas ao localhost
-- `--port 8000`: Define a porta 8000 para a API
-- `--reload`: Ativa o modo de recarga automática (útil para desenvolvimento)
+Important options:
 
-### API de Upload
+- `--host 127.0.0.1`: Restricts access to localhost only.
+- `--port 8000`: Sets port 8000 for the API.
+- `--reload`: Enables auto-reload mode (useful for development).
+
+### Upload API
 
 ```bash
 uvicorn api_upload:app --host 127.0.0.1 --port 8001 --reload
 ```
 
-Para produção, remova a flag `--reload` e considere usar `--host 0.0.0.0` se precisar acessar a API de outros dispositivos na rede.
+For production, remove the `--reload` flag and consider using `--host 0.0.0.0` if the API needs to be accessed from other devices on the network.
 
-## Atualizações Recentes
+## Recent Updates
 
-- **Correção do modo pergunta (LLM)**: Resolvido o problema que afetava o modo pergunta após o processamento de novos contratos. A solução envolveu modificar o `llm_router.py` para acessar diretamente a função `buscar_documentos` do módulo `pinecone_utils.py`, contornando a incompatibilidade de formato com a função `buscar_contratos`.
+- **Question Mode Fix (LLM)**: Resolved an issue affecting question mode after processing new contracts. The solution involved modifying `llm_router.py` to directly access the `buscar_documentos` function from the `pinecone_utils.py` module, bypassing format incompatibility with the `buscar_contratos` function.
 
-- **Melhoria no tratamento de erros**: Implementado tratamento de erros mais robusto em toda a aplicação, com mensagens mais claras e logs detalhados para facilitar a depuração.
+- **Improved Error Handling**: Implemented more robust error handling across the application, with clearer messages and detailed logs for easier debugging.
 
-- **Otimização do frontend**: Melhorado o tratamento de erros no frontend para exibir mensagens mais claras ao usuário.
+- **Frontend Optimization**: Enhanced error handling in the frontend to display clearer messages to users.
 
-- **Processamento de novos contratos**: Adicionados e processados novos contratos (contrato_joao_silva.pdf e contrato_maria_oliveira.pdf).
+- **New Contract Processing**: Added and processed new contracts (`contrato_joao_silva.pdf` and `contrato_maria_oliveira.pdf`).
 
-- **Atualização da documentação**: Melhorada a documentação com instruções detalhadas para inicialização e uso do sistema.
+- **Documentation Update**: Improved documentation with detailed instructions for initialization and system usage.
